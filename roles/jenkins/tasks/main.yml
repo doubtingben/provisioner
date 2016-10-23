@@ -1,0 +1,9 @@
+---
+
+- name: start jenkins container
+  docker_container:
+    name: ansible-jenkins
+    image: jenkins:2.7.2
+    ports:
+    - "8080:8080"
+

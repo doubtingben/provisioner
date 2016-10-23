@@ -1,0 +1,65 @@
+---
+
+- hosts: provisioners
+
+  vars:
+    do_token: "{{ lookup('env', 'DO_TOKEN') }}"
+    droplets:
+    - droplet-ansible
+
+  tasks:
+  
+  - name: install packages
+    become: true
+    become_user: root
+    apt: name={{item}} state=installed
+    with_items:
+    - python-pip
+
+  - name: install python packages
+    pip: name={{item}} state=present
+    with_items:
+    - dopy
+
+  - name: check ssh keys
+    digital_ocean:
+      state: present
+      command: ssh
+      name: id_rsa.pub-bwilson-2013-evernote
+      ssh_pub_key: "{{ lookup('file', 'id_rsa.pub') }}"
+      api_token: "{{ do_token }}"
+    register: do_ssh_key
+
+  - name: create new droplet
+    digital_ocean:
+      state: present
+      command: droplet
+      name: "{{ item }}"
+      unique_name: yes
+      api_token: "{{ do_token }}"
+      size_id: 512mb
+      region_id: nyc3
+      # "id": 18325354,
+      # "name": "7.2 x64",
+      # "distribution": "CentOS",
+      image_id: 18325354
+      wait_timeout: 500
+      ssh_key_ids: "{{ do_ssh_key.ssh_key.id }}"
+    with_items: '{{ droplets }}'
+    register: droplet_inv
+
+  - debug: msg="IP is {{ item.droplet.ip_address }}"
+    with_items: '{{ droplet_inv.results }}'
+
+  - name: add droplets to inventory
+    add_host:
+      name: "{{ item.droplet.ip_address }}"
+      ansible_ssh_private_key_file: /home/bwilson/.ssh/id_rsa-bwilson-2013
+      ansible_ssh_user: root
+      groups: ansibletest
+    with_items: '{{ droplet_inv.results }}'
+
+- hosts: ansibletest
+  roles:
+  - docker
+  - jenkins
