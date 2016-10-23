@@ -4,12 +4,15 @@
   yum: name={{ item }} state=present
   with_items:
   - java-1.8.0-openjdk-headless
+  - git
 
 - name: add jenkins user
   user:
     name: jenkins
     generate_ssh_key: yes
     ssh_key_file: .ssh/id_rsa
+    groups: dockerroot
+    append: yes
 
 - name: link authorized keys
   file:
