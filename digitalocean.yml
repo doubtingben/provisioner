@@ -3,6 +3,8 @@
 - hosts: provisioners
 
   vars:
+    do_ssh_keyname: id_rsa.pub-bwilson-2013-evernote
+    do_ssh_keyfile: id_rsa.pub
     do_token: "{{ lookup('env', 'DO_TOKEN') }}"
     droplets:
     - droplet-ansible
@@ -25,8 +27,8 @@
     digital_ocean:
       state: present
       command: ssh
-      name: id_rsa.pub-bwilson-2013-evernote
-      ssh_pub_key: "{{ lookup('file', 'id_rsa.pub') }}"
+      name: '{{ do_ssh_keyname }}'
+      ssh_pub_key: "{{ lookup('file', do_ssh_keyfile) }}"
       api_token: "{{ do_token }}"
     register: do_ssh_key
 
