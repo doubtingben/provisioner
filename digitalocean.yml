@@ -39,7 +39,7 @@
       name: "{{ item }}"
       unique_name: yes
       api_token: "{{ do_token }}"
-      size_id: 512mb
+      size_id: 2gb
       region_id: nyc3
       # "id": 18325354,
       # "name": "7.2 x64",

@@ -1,9 +1,28 @@
 ---
 
+- name: install packages
+  yum: name={{ item }} state=present
+  with_items:
+  - java-1.8.0-openjdk-headless
+
+- name: add jenkins user
+  user:
+    name: jenkins
+    generate_ssh_key: yes
+    ssh_key_file: .ssh/id_rsa
+
+- name: link authorized keys
+  file:
+    src: /home/jenkins/.ssh/id_rsa.pub
+    dest: /home/jenkins/.ssh/authorized_keys
+    state: link
+
 - name: start jenkins container
   docker_container:
     name: ansible-jenkins
     image: jenkins:2.7.2
     ports:
     - "8080:8080"
+    volumes:
+    - "/home/jenkins:/mount/home"
 
