@@ -1,5 +1,5 @@
 node("docker") {
-    docker.withRegistry('https://index.docker.io', 'doubtingben-dockerhub') {
+    docker.withRegistry('https://index.docker.io/v1/', 'doubtingben-dockerhub') {
     
         git url: "https://github.com/doubtingben/provisioner.git", credentialsId: 'doubtingben-github'
     
