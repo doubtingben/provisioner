@@ -1,0 +1,11 @@
+server {
+    listen 80;
+
+    location ~ /.well-known {
+      root /usr/share/nginx/html/;
+      allow all;
+    }
+
+    return 301 https://$host$request_uri;
+}
+

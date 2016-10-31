@@ -1,0 +1,77 @@
+---
+
+- name: create nginx home dirs
+  file:
+    path: "{{ nginx_root }}/html"
+    state: directory
+    mode: 0755
+
+- name: install epel repo
+  yum:
+    name: epel-release
+    state: present
+
+- name: install packages for host
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+  - certbot
+
+- debug: var=domain_base
+
+- debug: msg="{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
+
+- name: configure http nginx
+  template:
+    src: "http.conf.j2"
+    dest: "{{ nginx_root }}/http-{{ domain_base }}.conf"
+  register: nginx_config_changed
+  tags:
+  - http
+
+- name: configure https nginx
+  template:
+    src: "https.conf.j2"
+    dest: "{{ nginx_root }}/https-{{ domain_base }}.conf"
+  register: nginx_config_changed
+  tags:
+  - https
+
+- name: create diffie-hellman group
+  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 creates=/etc/ssl/certs/dhparam.pem
+  tags:
+  - https
+
+- name: get certs
+  command: "certbot certonly --webroot -w /srv/docker/nginx/html/ -d jenkins.{{ domain_base}} creates=/etc/letsencrypt/live/jenkins.{{ domain_base }}/fullchain.pem"
+  tags:
+  - http
+
+- name: start nginx container
+  docker_container:
+    name: ansible-nginx-https
+    image: nginx:1.11
+    ports:
+    - "443:443"
+    volumes:
+    - "/etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem"
+    - "{{ nginx_root }}/https-{{ domain_base }}.conf:/etc/nginx/conf.d/default.conf"
+    - "/etc/letsencrypt/live/jenkins.{{ domain_base }}/fullchain.pem:/etc/nginx/cert.crt"
+    - "/etc/letsencrypt/live/jenkins.{{ domain_base }}/privkey.pem:/etc/nginx/cert.key"
+    - "{{ nginx_root }}/html:/usr/share/nginx/html"
+    links:
+    - "ansible-jenkins:jenkins"
+  tags:
+  - https
+
+- name: start nginx container
+  docker_container:
+    name: ansible-nginx-http
+    image: nginx:1.11
+    ports:
+    - "80:80"
+    volumes:
+    - "{{ nginx_root }}/http-{{ domain_base }}.conf:/etc/nginx/conf.d/default.conf"
+    - "{{ nginx_root }}/html:/usr/share/nginx/html"
+  tags:
+  - http
+

@@ -20,12 +20,19 @@
     dest: /home/jenkins/.ssh/authorized_keys
     state: link
 
+- name: create jenkins home dirs
+  file:
+    path: "{{ jenkins_home }}"
+    state: directory
+    mode: 0755
+    owner: 1000
+
 - name: start jenkins container
   docker_container:
     name: ansible-jenkins
     image: jenkins:2.7.2
-    ports:
-    - "8080:8080"
     volumes:
     - "/home/jenkins:/mount/home"
+    - "{{ jenkins_home }}:/var/jenkins_home"
+  register: jenkins_started
 
