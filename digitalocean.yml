@@ -2,15 +2,6 @@
 
 - hosts: provisioners
 
-  vars:
-    do_ssh_keyname: "{{ lookup('env', 'PROVISIONER_DO_SSH_KEYNAME') }}"
-    do_ssh_keyfile: "{{ lookup('env', 'PROVISIONER_DO_SSH_KEYFILE') }}"
-    ssh_private_keyfile: "{{ lookup('env', 'PROVISIONER_SSH_PRIVATE_KEYFILE') }}"
-    do_token: "{{ lookup('env', 'PROVISIONER_DO_TOKEN') }}"
-    domain_base: "{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
-    droplets:
-    - droplet-jenkins
-
   tasks:
   
   - name: install packages
@@ -19,11 +10,15 @@
     apt: name={{item}} state=installed
     with_items:
     - python-pip
+    tags:
+    - always
 
   - name: install python packages
     pip: name={{item}} state=present
     with_items:
     - dopy
+    tags:
+    - always
 
   - debug: var=do_ssh_keyname
 
@@ -35,6 +30,8 @@
       ssh_pub_key: "{{ lookup('file', do_ssh_keyfile) }}"
       api_token: "{{ do_token }}"
     register: do_ssh_key
+    tags:
+    - always
 
   - name: create new droplet
     digital_ocean:
@@ -53,6 +50,8 @@
       ssh_key_ids: "{{ do_ssh_key.ssh_key.id }}"
     with_items: '{{ droplets }}'
     register: droplet_inv
+    tags:
+    - always
 
   - debug: msg="IP is {{ item.droplet.ip_address }}"
     with_items: '{{ droplet_inv.results }}'
@@ -64,14 +63,32 @@
       ansible_ssh_user: root
       groups: ansibletest
     with_items: '{{ droplet_inv.results }}'
+    tags:
+    - always
 
 - hosts: ansibletest
   roles:
   - common
   - docker
   - jenkins
-  - role: nginx
+  - role: nginx-http
     domain_base: "{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
-    tags: ["http"]
+  - role: nginx-https
+    domain_base: "{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
+
+- hosts: provisioners
+  tasks:
+
+  - debug: var=droplet_inv
+
+  - name: update dns
+    digital_ocean_domain:
+     state: present
+     api_token: "{{ do_token }}"
+     name: "jenkins.{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
+     ip: "{{ item.droplet.ip_address }}"
+    with_items: '{{ droplet_inv.results }}'
+    tags:
+    - dns
 
 ...
