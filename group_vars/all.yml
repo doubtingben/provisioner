@@ -1,0 +1,16 @@
+---
+
+do_ssh_keyname: "{{ lookup('env', 'PROVISIONER_DO_SSH_KEYNAME') }}"
+do_ssh_keyfile: "{{ lookup('env', 'PROVISIONER_DO_SSH_KEYFILE') }}"
+ssh_private_keyfile: "{{ lookup('env', 'PROVISIONER_SSH_PRIVATE_KEYFILE') }}"
+do_token: "{{ lookup('env', 'PROVISIONER_DO_TOKEN') }}"
+domain_base: "{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
+droplets:
+- droplet-jenkins
+
+
+websites:
+  - domain_name: jenkins
+    path: /var/lib/jenkins
+
+...
