@@ -37,7 +37,7 @@
     - "{{ nginx_root }}/html:/usr/share/nginx/html"
 
 - name: get certs
-  command: "certbot certonly --webroot -w /srv/docker/nginx/html/ -d {{ item.domain_name }}.{{ domain_base}} creates=/etc/letsencrypt/live/{{ item.domain_name }}.{{ domain_base }}/fullchain.pem"
+  command: "certbot certonly --webroot -w /srv/docker/nginx/html/ -d {{ item.domain_name }}.{{ domain_base}} creates=/etc/letsencrypt/live/{{ item.domain_name }}.{{ domain_base }}/fullchain.pem --agree-tos --non-interactive --email {{ email }}"
   with_items:
     - "{{ websites }}"
 

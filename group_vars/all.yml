@@ -5,6 +5,7 @@ do_ssh_keyfile: "{{ lookup('env', 'PROVISIONER_DO_SSH_KEYFILE') }}"
 ssh_private_keyfile: "{{ lookup('env', 'PROVISIONER_SSH_PRIVATE_KEYFILE') }}"
 do_token: "{{ lookup('env', 'PROVISIONER_DO_TOKEN') }}"
 domain_base: "{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
+email: "{{ lookup('env', 'PROVISIONER_EMAIL') }}"
 droplets:
 - jenkins
 
