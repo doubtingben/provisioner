@@ -26,11 +26,6 @@
     dest: "{{ nginx_root }}/http-{{ domain_base }}.conf"
   register: nginx_config_changed
 
-- name: get certs
-  command: "certbot certonly --webroot -w /srv/docker/nginx/html/ -d {{ item.domain_name }}.{{ domain_base}} creates=/etc/letsencrypt/live/{{ item.domain_name }}.{{ domain_base }}/fullchain.pem"
-  with_items:
-    - "{{ websites }}"
-
 - name: start nginx http container
   docker_container:
     name: ansible-nginx-http
@@ -40,5 +35,11 @@
     volumes:
     - "{{ nginx_root }}/http-{{ domain_base }}.conf:/etc/nginx/conf.d/default.conf"
     - "{{ nginx_root }}/html:/usr/share/nginx/html"
+
+- name: get certs
+  command: "certbot certonly --webroot -w /srv/docker/nginx/html/ -d {{ item.domain_name }}.{{ domain_base}} creates=/etc/letsencrypt/live/{{ item.domain_name }}.{{ domain_base }}/fullchain.pem"
+  with_items:
+    - "{{ websites }}"
+
 
 ...

@@ -37,7 +37,7 @@
     digital_ocean:
       state: present
       command: droplet
-      name: "{{ item }}"
+      name: "{{ item }}.{{ domain_base }}"
       unique_name: yes
       api_token: "{{ do_token }}"
       size_id: 2gb
@@ -66,6 +66,19 @@
     tags:
     - always
 
+  - name: debug droplet_inv
+    debug: var=droplet_inv
+
+  - name: update dns
+    digital_ocean_domain:
+     state: present
+     api_token: "{{ do_token }}"
+     name: "{{ item.droplet.name }}"
+     ip: "{{ item.droplet.ip_address }}"
+    with_items: '{{ droplet_inv.results }}'
+    tags:
+    - dns
+
 - hosts: ansibletest
   roles:
   - common
@@ -75,20 +88,5 @@
     domain_base: "{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
   - role: nginx-https
     domain_base: "{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
-
-- hosts: provisioners
-  tasks:
-
-  - debug: var=droplet_inv
-
-  - name: update dns
-    digital_ocean_domain:
-     state: present
-     api_token: "{{ do_token }}"
-     name: "jenkins.{{ lookup('env', 'PROVISIONER_DOMAIN_BASE') }}"
-     ip: "{{ item.droplet.ip_address }}"
-    with_items: '{{ droplet_inv.results }}'
-    tags:
-    - dns
 
 ...
