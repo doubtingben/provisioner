@@ -1,7 +1,7 @@
 ---
 
 - name: install packages
-  yum: name={{ item }} state=present
+  package: name={{ item }} state=present
   with_items:
   - docker
   register: dockerInstalled
@@ -11,6 +11,9 @@
     src: docker-sysconfig
     dest: /etc/sysconfig/docker
   register: dockerConfigured
+  when: ansible_distribution == 'CentOS'
+        or
+        ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Restart docker
   service: name=docker enabled=yes state=started
