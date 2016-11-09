@@ -1,0 +1,8 @@
+---
+
+- name: start rsyslog container
+  docker_container:
+    image: doubtingben/rsyslog
+    name: rsyslog
+
+...
