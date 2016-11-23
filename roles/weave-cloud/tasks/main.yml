@@ -1,7 +1,9 @@
 ---
 
 - name: download weave scope
-  command: curl -L git.io/scope -o /usr/local/bin/scope creates=/usr/local/bin/scope
+  get_url:
+    url: http://git.io/scope
+    dest: /usr/local/bin/scope
 
 - name: make scope executable
   file:

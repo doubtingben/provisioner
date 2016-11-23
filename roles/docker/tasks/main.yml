@@ -19,8 +19,5 @@
   service: name=docker enabled=yes state=started
   when: dockerInstalled or dockerConfigured
 
-- name: install pip
-  command: easy_install pip
-
 - name: install python packages
-  pip: name=docker-py version=1.9.0 state=forcereinstall
+  pip: name=docker-py version=1.9.0
