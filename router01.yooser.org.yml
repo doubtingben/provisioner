@@ -22,9 +22,16 @@
     tags:
     - always
 
+  - name: tarsnap backups
+    include: tarsnap_backup.yml
+    vars:
+      paths:
+        - /srv/docker/openvpn/
+
   roles:
   - weave-cloud
   - rsyslog
   - openvpn
+  - tarsnap
 
 ...

@@ -1,0 +1,60 @@
+---
+
+- name: install required packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gcc 
+    - libc6-dev
+    - make
+    - libssl-dev
+    - zlib1g-dev
+    - e2fslibs-dev
+    - curl
+
+- name: create base dir
+  file:
+    path: "{{ tarsnap_base_dir }}"
+    state: directory
+
+- name: get key file
+  get_url:
+    url: https://www.tarsnap.com/tarsnap-signing-key-2016.asc
+    dest: /tmp
+
+- name: import gpg key
+  command: gpg --import /tmp/tarsnap-signing-key-2016.asc
+
+- name: get install files
+  get_url:
+    url: "{{ item }}"
+    dest: /tmp/
+  with_items:
+    - https://www.tarsnap.com/download/tarsnap-autoconf-{{ tarsnap_version }}.tgz
+    - https://www.tarsnap.com/download/tarsnap-sigs-{{ tarsnap_version }}.asc
+
+- name: extract archive
+  unarchive:
+    src: "/tmp/tarsnap-autoconf-{{ tarsnap_version }}.tgz"
+    dest: "{{ tarsnap_base_dir }}"
+
+- name: configure
+  command: >
+    {{ item.cmd }}
+    chdir={{ tarsnap_base_dir }}/tarsnap-autoconf-{{ tarsnap_version }}
+    creates={{ item.creates }}
+  with_items:
+    - cmd: ./configure
+      creates: "{{ tarsnap_base_dir }}/tarsnap-autoconf-{{ tarsnap_version }}/Makefile"
+    - cmd: make all
+      creates: "{{ tarsnap_base_dir }}/tarsnap-autoconf-{{ tarsnap_version }}/tarsnap"
+    - cmd: make install
+      creates: /usr/local/bin/tarsnap
+
+- name: template config file
+  template:
+    src: tarsnap.conf.js
+    dest: /usr/local/etc/tarsnap.conf
+
+...

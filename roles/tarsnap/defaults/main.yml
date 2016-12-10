@@ -1,0 +1,6 @@
+---
+
+tarsnap_base_dir: /srv/tarsnap
+tarsnap_version: 1.0.37
+
+...

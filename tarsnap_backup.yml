@@ -1,0 +1,15 @@
+---
+
+- name: create crons
+  cron:
+    name: tarsnap_backups
+    user: root
+    minute: "0"
+    hour: "1"
+    cron_file: tarsnap_backups
+    job: >
+      tarsnap -c 
+      -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)"
+      {% for path in paths %}{{ path }}{% endfor %}
+
+...
