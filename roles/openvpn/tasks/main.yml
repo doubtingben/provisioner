@@ -1,0 +1,25 @@
+---
+
+- name: setup directories
+  file:
+    path: "{{ openvpn_base_dir }}"
+    state: directory
+
+- name: configure config file
+  copy:
+    src: openvpn.conf
+    dest: "{{ openvpn_base_dir }}/openvpn.conf"
+  register: openvpnConfigured
+
+- name: Run openvpn server
+  docker_container:
+    name: "{{ ansible_hostname }}_vpn"
+    image: kylemanna/openvpn
+    volumes:
+      - "{{ openvpn_base_dir }}:/etc/openvpn"
+    network_mode: host
+    privileged: yes
+    ports:
+      - "1194/udp"
+    env:
+      DEBUG: 1

@@ -1,0 +1,5 @@
+---
+
+openvpn_base_dir: /srv/docker/openvpn
+
+...
