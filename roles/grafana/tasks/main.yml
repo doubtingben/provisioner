@@ -1,0 +1,27 @@
+---
+
+- name: create grafana home
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ grafana_base }}"
+    - "{{ grafana_base }}/etc"
+    - "{{ grafana_base }}/data"
+
+- name: template config file
+  template:
+    src: "grafana.ini.j2"
+    dest: "{{ grafana_base }}/etc/grafana.ini"
+
+- name: start grafana container
+  docker_container:
+    name: ansible-grafana
+    image: grafana/grafana:4.0.2
+    volumes:
+    - "{{ grafana_base }}/data:/var/lib/grafana"
+    - "{{ grafana_base }}/etc:/etc/grafana"
+    ports:
+    - "3000:3000"
+
+...

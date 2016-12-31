@@ -12,5 +12,6 @@
       -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)"
       {% for path in paths %}{{ path }}{% endfor %}
       >> /var/log/tarsnap.log
+      2>&1
 
 ...

@@ -33,5 +33,7 @@
   - rsyslog
   - openvpn
   - tarsnap
+  - prometheus
+  - grafana
 
 ...
