@@ -1,18 +1,23 @@
 ---
 
 - name: Install base packages
-  yum:
+  package:
     name: "{{item }}"
     state: present
   with_items:
   - ntp
   - vim
-  - zsh
+  - yadm
+
+- name: create admins group
+  group:
+    name: admins
+    state: present
 
 - name: Setup users
   user: name={{ item.name }} comment={{ item.comment }} uid={{ item.uid }} shell={{ item.shell }} groups={{ item.groups }}
   with_items:
-  - { name: 'bwilson', comment: 'Ben Wilson', uid: '2005', shell: '/bin/bash', groups: 'wheel' }
+  - { name: 'bwilson', comment: 'Ben Wilson', uid: '2005', shell: '/bin/bash', groups: 'admins' }
 
 - name: Setup ssh keys
   authorized_key: user={{ item.user }} key="{{ item.key }}"
@@ -20,5 +25,10 @@
   - { user: 'bwilson', key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDoAly4523GGnb9ufTAaldoBgLGAFWc7LSCx4M6JZldo08PPILPv+pHXXkv0zNW0faeVf7BMrWdTDK2vRPv2LWKG9Po0UckOInO66OmYRD/Yp/G7ruksnqtc8xhKDBB1y1hkdxhtcHggANDQO0pIYcnX9EiyTTVT/Qj7j7FIoSYWOWvMB7K5tNaTWr0jFBK4N01+NPgSjUaZEdU1XvCzvmT21TthF7jCe2NCFSA5npePbGIruGSFKseV+FHBu2bHoIziDcFHYcBYpM4+OqbsmeSqaNQauvXdbrxYxtF8K2Xm0J4hz+hyebTu2DUOGpIwfftwCSKx1mrh/TQjvTJ00v/'}
 
 - name: Setup wheel group with no password
-  lineinfile: "dest=/etc/sudoers state=present regexp='^%wheel' line='%wheel ALL=(ALL) NOPASSWD: ALL'"
+  lineinfile: 
+    line: "%admins ALL=(ALL) NOPASSWD: ALL"
+    dest: /etc/sudoers
+    state: present
+    create: yes
+    validate: 'visudo -cf %s'
 
