@@ -1,0 +1,22 @@
+---
+
+- name: install packages
+  package: name={{ item }} state=present
+  with_items:
+  - docker
+  register: dockerInstalled
+
+- name: configure docker files
+  copy:
+    src: docker-sysconfig
+    dest: /etc/sysconfig/docker
+  register: dockerConfigured
+
+- name: Restart docker
+  service: name=docker enabled=yes state=started
+  when: dockerInstalled or dockerConfigured
+
+- name: install python packages
+  pip: name=docker-py version=1.9.0
+
+...

@@ -1,23 +1,12 @@
 ---
 
-- name: install packages
-  package: name={{ item }} state=present
-  with_items:
-  - docker
-  register: dockerInstalled
-
-- name: configure docker files
-  copy:
-    src: docker-sysconfig
-    dest: /etc/sysconfig/docker
-  register: dockerConfigured
+- include: redhat_centos.yml
   when: ansible_distribution == 'CentOS'
         or
         ansible_distribution == 'Red Hat Enterprise Linux'
 
-- name: Restart docker
-  service: name=docker enabled=yes state=started
-  when: dockerInstalled or dockerConfigured
+- include: ubuntu.yml
+  when: ansible_lsb.id|lower == 'ubuntu'
 
-- name: install python packages
-  pip: name=docker-py version=1.9.0
+
+...
