@@ -6,15 +6,13 @@
     state: directory
     mode: 0755
 
-- name: install epel repo
-  yum:
-    name: epel-release
-    state: present
+- name: certbot for redhat
+  include: redhat.yml
+  when: ansible_os_family == "RedHat"
 
-- name: install packages for host
-  yum: name={{ item }} state=present update_cache=yes
-  with_items:
-  - certbot
+- name: certbot for redhat
+  include: debian.yml
+  when: ansible_os_family == "Debian"
 
 - debug: var=domain_base
 

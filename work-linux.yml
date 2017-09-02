@@ -31,5 +31,6 @@
   - docker
   - ipfs
   - weave-cloud
+  - nginx-http
 
 ...
