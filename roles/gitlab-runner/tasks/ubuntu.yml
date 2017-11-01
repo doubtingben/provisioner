@@ -1,0 +1,32 @@
+---
+
+- name: install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - curl
+
+- name: gitlab apt key
+  apt_key:
+    url: "https://packages.gitlab.com/runner/gitlab-ci-multi-runner/gpgkey"
+    state: present
+
+- name: gitlab apt-repo
+  apt_repository:
+    repo: "deb https://packages.gitlab.com/runner/gitlab-ci-multi-runner/ubuntu/ {{ ansible_lsb.codename }} main"
+    state: present
+
+- name: gitlab src apt-repo
+  apt_repository:
+    repo: "deb-src https://packages.gitlab.com/runner/gitlab-ci-multi-runner/ubuntu/ {{ ansible_lsb.codename }} main"
+    state: present
+
+- name: install gitlab-runner
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gitlab-ci-multi-runner
+
+...

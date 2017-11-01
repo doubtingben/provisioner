@@ -1,0 +1,20 @@
+---
+
+- hosts: linode
+  become: true
+  become_user: root
+
+  tasks:
+
+  - name: add authorized_keys
+    authorized_key:
+      user: root
+      state: present
+      key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDiqlwG5og1m9Twrjwcajxbxy1iIB/Bzhpm5XqiDHE5bGkeDfhs3F7GWKCKtaigQKhDv2kzyW8mEKwCZ/gxSM4Mi1Dm134kN0C9A71693pWuvQAm5CEj7P2VpzOPmQ3iZV4AWjENKWW4ouGsMtGyKIV4by/Zzey/uoSLKHgZgR/ec2HX36jb8KZfKhav1jjVoZTT3wZsw8AQMri6/v7PUu2hDlU94CVgNfgdYmNaUiVSsPm2oe5YKwWzhmaUxjqq8fXcHZPBu8UZ/hgmmweQK8auybFI03T7ej1AQbYZcRTXK8lvZEf2gfEhsBW7JMScRoBxQRcahK+ZHk4cRTw/0/j
+
+  roles:
+  - common
+  - docker
+  - gitlab-runner
+
+...

@@ -8,6 +8,7 @@
   - ntp
   - vim
   - yadm
+  - unzip
 
 - name: create admins group
   group:
