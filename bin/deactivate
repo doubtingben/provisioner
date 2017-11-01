@@ -1,0 +1,5 @@
+#!/bin/bash
+
+for i in $(env | grep PROVISIONER | awk -F'=' '{print $1}');
+  do unset ${i};
+done
