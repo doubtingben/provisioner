@@ -57,4 +57,18 @@
     src: tarsnap.conf.js
     dest: /usr/local/etc/tarsnap.conf
 
+- name: create crons
+  cron:
+    name: tarsnap_backups
+    user: root
+    minute: "0"
+    hour: "1"
+    cron_file: tarsnap_backups
+    job: >
+      tarsnap -c 
+      -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)"
+      {% for path in paths %}{{ path }}{% endfor %}
+      >> /var/log/tarsnap.log
+      2>&1
+
 ...

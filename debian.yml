@@ -1,8 +1,0 @@
----
-
-- name: install packages for host
-  package: name={{ item }} state=present
-  with_items:
-  - letsencrypt
-
-...
