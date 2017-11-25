@@ -11,13 +11,13 @@
 
 - name: install binaries
   unarchive:
-    src: https://releases.hashicorp.com/terraform/0.10.8/terraform_0.10.8_linux_amd64.zip
+    src: "{{ item.url }}"
     dest: "{{ bwilson.home }}/.local/bin/"
     remote_src: yes
     mode: 0755
     owner: bwilson
   with_items:
-    - { url: "https://releases.hashicorp.com/terraform/0.10.8/terraform_0.10.8_linux_amd64.zip",
+    - { url: "https://releases.hashicorp.com/terraform/0.11.0/terraform_0.11.0_linux_amd64.zip",
         name: terraform
       }
 
