@@ -1,0 +1,8 @@
+---
+
+- name: run role tasks
+  import_tasks: bwilson.yml
+  tags:
+    - bwilson
+
+...

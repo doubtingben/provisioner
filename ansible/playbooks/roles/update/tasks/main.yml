@@ -1,0 +1,15 @@
+---
+
+- import_tasks: redhat_centos.yml
+  when: ansible_distribution == 'CentOS'
+        or
+        ansible_distribution == 'Red Hat Enterprise Linux'
+  tags:
+    - update
+    
+- import_tasks: ubuntu.yml
+  when: ansible_lsb.id|lower == 'ubuntu'
+  tags:
+    - update
+
+...

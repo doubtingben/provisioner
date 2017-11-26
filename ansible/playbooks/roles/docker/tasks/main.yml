@@ -1,11 +1,11 @@
 ---
 
-- include: redhat_centos.yml
+- import_tasks: redhat_centos.yml
   when: ansible_distribution == 'CentOS'
         or
         ansible_distribution == 'Red Hat Enterprise Linux'
 
-- include: ubuntu.yml
+- import_tasks: ubuntu.yml
   when: ansible_lsb.id|lower == 'ubuntu'
 
 

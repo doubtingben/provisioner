@@ -1,0 +1,32 @@
+---
+
+- name: setup user
+  user:
+    name: bwilson
+    uid: 1000
+    groups: adm,sudo,docker
+    append: yes
+    
+- name: set key
+  authorized_key:
+    user: bwilson
+    state: present
+    key: "{{ lookup('file', '/home/bwilson/.ssh/bwilson-home-2017-id_rsa.pub') }}"
+    
+- name: create dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: bwilson
+  with_items:
+    - "{{ bwilson.home }}/.local/bin"
+
+- name: sudo file
+  copy:
+    content: bwilson ALL=(ALL) NOPASSWD:ALL
+    dest: /etc/sudoers.d/bwilson
+    mode: 0440
+    owner: root
+    
+...

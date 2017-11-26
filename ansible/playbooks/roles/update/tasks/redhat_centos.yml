@@ -1,0 +1,7 @@
+---
+
+- name: redhat centos tasks
+  debug:
+    msg: todo
+
+...

@@ -1,0 +1,37 @@
+---
+
+- name: update
+  apt:
+    update_cache: yes
+    upgrade: dist
+    cache_valid_time: 3600
+    autoclean: yes
+    autoremove: yes
+
+- name: Check if a reboot is required
+  register: reboot_required_file
+  stat:
+    path: /var/run/reboot-required
+    get_md5: no
+
+- name: reboot required
+  debug:
+    var: reboot_required_file
+  when: reboot_required_file.stat.exists
+
+- name: reboot
+  shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+  async: 1
+  poll: 0
+  when: reboot_required_file.stat.exists  
+
+- name: waiting for the host to come back
+  wait_for:
+    port: 22
+    state: started
+    host: '{{ ansible_ssh_host | default(inventory_hostname) }}'
+    delay: 30
+  delegate_to: localhost
+  when: reboot_required_file.stat.exists  
+
+...

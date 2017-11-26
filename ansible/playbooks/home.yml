@@ -1,0 +1,37 @@
+---
+
+- hosts: all
+  become: true
+  become_user: root
+
+  tasks:
+
+  - name: install pip
+    easy_install:
+      name: pip
+
+  - name: install packages
+    become: true
+    become_user: root
+    apt: name={{item}} state=installed
+    with_items:
+      - emacs24-nox
+      - vim
+    tags:
+      - always
+
+  - name: install python packages
+    pip: name={{item}} state=present
+    with_items:
+      - dopy
+      - ansible-lint
+    tags:
+      - always
+
+  roles:
+    - update
+    - docker
+    - ipfs
+    - bwilson
+
+...
