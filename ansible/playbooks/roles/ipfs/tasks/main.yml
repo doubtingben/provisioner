@@ -1,26 +1,8 @@
 ---
 
-- name: make directories
-  file:
-    state: directory
-    path: "{{ item.path }}"
-    mode: "{{ item.mode }}"
-  with_items:
-  - path: "{{ ipfs_base_path }}/staging"
-    mode: "0777"
-  - path: "{{ ipfs_base_path }}/data"
-    mode: "0777"
-
-- name: start ipfs container
-  docker_container:
-    name: ipfs
-    image: ipfs/go-ipfs:latest
-    ports:
-    - "8080:8080"
-    - "4001:4001"
-    - "5001:5001"
-    volumes:
-    - "{{ ipfs_base_path }}/staging:/export"
-    - "{{ ipfs_base_path }}/data:/data/ipfs"
+- name: run role tasks
+  import_tasks: ipfs.yml
+  tags:
+    - ipfs
 
 ...
