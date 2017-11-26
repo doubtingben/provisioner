@@ -1,0 +1,9 @@
+---
+
+- name: run role tasks
+  import_tasks: prometheus-node-exporter.yml
+  tags:
+    - prometheus-node-exporter
+
+
+...

@@ -1,27 +1,8 @@
 ---
 
-- name: create prometheus home
-  file:
-    path: "{{ prometheus_base }}"
-    state: directory
-
-- name: template config file
-  template:
-    src: "prometheus.yml.j2"
-    dest: "{{ prometheus_base }}/prometheus.yml"
-
-- name: start prometheus container
-  docker_container:
-    name: ansible-prometheus
-    image: prom/prometheus
-    volumes:
-    - "{{ prometheus_base }}:/prometheus"
-    ports:
-    - "127.0.0.1:9090:9090"
-    command: >
-      -config.file=/prometheus/prometheus.yml
-      -storage.local.path=/prometheus/data
-      -web.console.libraries=/etc/prometheus/console_libraries
-      -web.console.templates=/etc/prometheus/consoles
+- name: run role taks
+  import_tasks: prometheus.yml
+  tags:
+    - prometheus
 
 ...

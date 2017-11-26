@@ -1,0 +1,8 @@
+---
+
+- name: prometheus_restart
+  docker_container:
+    name: prometheus
+    restart: yes
+
+...

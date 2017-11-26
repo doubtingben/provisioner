@@ -14,4 +14,18 @@ websites:
   - domain_name: jenkins
     path: /var/lib/jenkins
 
+prometheus:
+  version: v2.0.0
+  targets: >-
+    {% for host in groups['all'] -%}
+      '{{ hostvars[host]['ansible_host'] }}:9090'
+      {%- if not loop.last %},{% endif -%}
+    {%- endfor %}
+
+prometheus_node_exporter:
+  version: v0.15.1
+
+ipfs:
+  version: v0.4.13
+
 ...

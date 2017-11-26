@@ -31,6 +31,8 @@
   roles:
     - update
     - docker
+    - prometheus-node-exporter
+    - prometheus
     - ipfs
     - bwilson
 

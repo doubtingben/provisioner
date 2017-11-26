@@ -14,12 +14,9 @@
 - name: start ipfs container
   docker_container:
     name: ipfs
-    image: ipfs/go-ipfs:latest
+    image: "ipfs/go-ipfs:{{ ipfs.version}}"
+    network_mode: host
     restart_policy: always
-    ports:
-      - "8080:8080"
-      - "4001:4001"
-      - "5001:5001"  
     volumes:
       - "{{ ipfs_base_path }}/staging:/export"
       - "{{ ipfs_base_path }}/data:/data/ipfs"

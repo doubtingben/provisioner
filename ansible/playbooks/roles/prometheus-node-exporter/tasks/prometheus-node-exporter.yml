@@ -1,0 +1,24 @@
+---
+
+- name: create base path
+  file:
+    path: /srv/prometheus-node-exporter
+    state: directory
+
+- name: start prometheus-node-exporter container
+  docker_container:
+    name: prometheus-node-exporter
+    image: "prom/node-exporter:{{ prometheus_node_exporter.version }}"
+    network_mode: host
+    restart_policy: always
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /etc/hostname:/etc/host_name
+    command: |
+      --path.procfs /host/proc
+      --path.sysfs /host/sys
+      --collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($$|/)"
+
+...
