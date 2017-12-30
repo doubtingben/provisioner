@@ -6,7 +6,7 @@ all:
       ansible_host: 192.168.1.115
       ansible_connection: local
     mini-monitor:
-      ansible_host: 192.168.1.101
+      ansible_host: 192.168.1.102
     mini-basement-media:
       ansible_host: 192.168.1.113
     i5-miniitx:

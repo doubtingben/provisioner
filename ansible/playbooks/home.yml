@@ -17,23 +17,21 @@
     with_items:
       - emacs24-nox
       - vim
-    tags:
-      - always
 
   - name: install python packages
     pip: name={{item}} state=present
     with_items:
       - dopy
       - ansible-lint
-    tags:
-      - always
 
   roles:
     - update
     - docker
     - prometheus-node-exporter
     - prometheus
+    - grafana
     - ipfs
     - bwilson
+    - kubeadm
 
 ...

@@ -1,0 +1,8 @@
+---
+
+- import_tasks: ubuntu.yml
+  when: ansible_lsb.id|lower == 'ubuntu'
+  tags:
+    - kubeadm
+
+...
