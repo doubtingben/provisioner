@@ -25,7 +25,14 @@ prometheus:
 prometheus_node_exporter:
   version: v0.15.1
 
+grafana:
+  version: 4.6.2
 ipfs:
   version: v0.4.13
+
+docker:
+  config:
+    exec-opts:
+      - native.cgroupdriver=systemd
 
 ...

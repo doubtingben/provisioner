@@ -1,0 +1,12 @@
+---
+
+- name: start grafana container
+  docker_container:
+    name: grafana
+    image: "grafana/grafana:{{ grafana.version }}"
+    network_mode: host
+    restart_policy: always
+    env:
+      GF_SECURITY_ADMIN_PASSWORD: secret
+
+...

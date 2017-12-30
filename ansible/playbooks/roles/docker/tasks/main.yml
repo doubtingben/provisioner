@@ -4,9 +4,20 @@
   when: ansible_distribution == 'CentOS'
         or
         ansible_distribution == 'Red Hat Enterprise Linux'
+  tags:
+    - docker
 
 - import_tasks: ubuntu.yml
   when: ansible_lsb.id|lower == 'ubuntu'
+  tags:
+    - docker
 
+- name: tempalte daemon.json
+  copy:
+    content: "{{ docker.config }}"
+    dest: /etc/docker/daemon.json
+  notify: restart docker
+  tags:
+    - docker
 
 ...

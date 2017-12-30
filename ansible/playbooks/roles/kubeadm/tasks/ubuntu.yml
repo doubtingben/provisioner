@@ -1,0 +1,29 @@
+---
+
+- name: install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+
+- name: apt key
+  apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    state: present
+
+- name: apt-repo
+  apt_repository:
+    repo: "deb [arch=amd64] http://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+
+- name: install
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+...
