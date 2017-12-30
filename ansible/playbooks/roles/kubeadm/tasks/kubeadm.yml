@@ -1,0 +1,18 @@
+---
+
+- name: turn off swap
+  command: swapoff --all
+
+- name: start service
+  systemd:
+    name: kubelet
+    state: started
+    enabled: true
+
+- name: template systemd file
+  template:
+    src: 10-kubeadm.conf.j2
+    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+  notify: restart kubelet
+
+...

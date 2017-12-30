@@ -5,4 +5,16 @@
   tags:
     - kubeadm
 
+- name: run role tasks
+  import_tasks: kubeadm.yml
+  tags:
+    - kubeadm
+
+- name: start service
+  systemd:
+    name: kubelet
+    state: started
+    enabled: true
+  tags:
+    - kubeadm
 ...
